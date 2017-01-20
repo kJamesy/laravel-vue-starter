@@ -59,6 +59,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $meta = json_encode(['role' => User::getDefaultRole()]);
+
         return User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
@@ -66,6 +68,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'active' => 1,
+            'meta' => $meta,
         ]);
     }
 }
