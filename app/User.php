@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Policies\UserPolicy;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -39,6 +40,14 @@ class User extends Authenticatable
         'username' => 'required|max:255|unique:users',
         'email' => 'required|email|max:255|unique:users',
         'password' => 'required|min:6|confirmed',
+    ];
+
+    /**
+     * Define all the things for which a user needs explicit permissions
+     * @var array
+     */
+    public static $policies = [
+        'users' => UserPolicy::class,
     ];
 
     /**
@@ -87,5 +96,20 @@ class User extends Authenticatable
         return false;
     }
 
+    /**
+     * Determine if supplied user has supplied permission
+     * @param $user
+     * @param $permission
+     * @return bool
+     */
+    public static function hasPermission($user, $permission)
+    {
+        $meta = json_decode($user->meta);
+
+        if ( $meta && property_exists( $meta, $permission ) )
+            return $meta->{$permission} == true;
+
+        return false;
+    }
 
 }
