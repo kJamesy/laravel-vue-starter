@@ -1,0 +1,81 @@
+// Variables
+
+// Border and Shadows
+$box-shadow: 0 3px 6px rgba(0, 0, 0, .125);
+$popup-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+$border-color: 1px solid rgba($brand-primary, .4);
+$border-color-active: 1px solid rgba($brand-primary, .8);
+$border-color-danger: 1px solid $brand-danger;
+
+
+// Buttons Override
+.btn.btn-primary {
+  transition: box-shadow 200ms, background-color 200ms;
+
+  &:hover {
+    box-shadow: $popup-box-shadow;
+    border-color: transparent;
+    background-color: lighten($brand-primary, 10%);
+  }
+}
+
+
+// Bootstrap Components Override
+.panel.panel-default {
+  border-radius: 0;
+  border: $border-color;
+  transition: box-shadow 200ms;
+
+  &:hover {
+    box-shadow: $popup-box-shadow;
+  }
+  .panel-heading, .panel-body {
+    border-radius: 0;
+  }
+  .panel-heading {
+    border-bottom: $border-color;
+  }
+}
+
+
+// Bootstrap Navbar Override
+.navbar-default {
+  border: $border-color;
+  transition: box-shadow 200ms;
+  box-shadow: $box-shadow;
+
+  &:hover, &:hover .dropdown-menu {
+    box-shadow: $popup-box-shadow;
+  }
+}
+.dropdown {
+  .dropdown-menu {
+    border-radius: 0;
+    border: $border-color;
+    box-shadow: $box-shadow;
+  }
+}
+
+
+// Bootstrap Forms Override
+.form-group {
+  textarea, input, button {
+    border-radius: 0;
+    border: $border-color;
+    &:focus {
+      outline: none;
+      border: $border-color-active;
+      box-shadow: none;
+    }
+  }
+}
+.form-group.has-error {
+  textarea, input, button {
+    border: $border-color-danger;
+    &:focus {
+      outline: none;
+      border: $border-color-active;
+      box-shadow: none;
+    }
+  }
+}
