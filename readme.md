@@ -20,4 +20,7 @@
 #### User Profile Page
 ![Users Landing Page](public/screenshots/3.User_Profile.jpg)
 
+#### VueJS History Mode
+![Users Landing Page](public/screenshots/6.Vue_History_Mode.jpg)
+
 * More screenshots in /public/screenshots
