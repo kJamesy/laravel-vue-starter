@@ -8,3 +8,16 @@
 * Admin user management functionality with policy-based permissions
 * Elastic search + Laravel scout for search
 * Bootstrap 4
+
+### Screenshots
+
+#### Users Landing Page
+![Users Landing Page](public/screenshots/4.Users_Landing_Page.jpg)
+
+#### Users Permissions Page
+![Users Landing Page](public/screenshots/5.Users_Permissions.jpg)
+
+#### User Profile Page
+![Users Landing Page](public/screenshots/3.User_Profile.jpg)
+
+* More screenshots in /public/screenshots
