@@ -1,0 +1,45 @@
+.btn {
+  cursor: pointer;
+}
+
+.btn, .form-control, .nav-tabs .nav-link, .card, .dropdown-menu, .sweet-alert, .sweet-alert button, .custom-checkbox .custom-control-indicator {
+  border-radius: 0;
+}
+
+.dropdown-menu {
+  margin: 0.4rem 0 0;
+}
+
+.admin-nav.bg-primary .nav-link {
+  color: $white;
+
+  &.active::after {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    background: $yellow;
+    height: 25px;
+    float: right;
+  }
+}
+
+.table-striped tbody tr:nth-of-type(2n+1) {
+  background: $teal;
+}
+
+.table th, .table td {
+  border: none;
+  padding: 0.6rem;
+}
+
+table tr.pointer-cursor th {
+  cursor: pointer;
+}
+
+table tr.pointer-cursor th.normal-cursor {
+  cursor: auto;
+}
+
+table .custom-checkbox {
+  min-height: 1rem;
+}

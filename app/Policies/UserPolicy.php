@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Permissions\UserPermissions;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -13,7 +14,8 @@ class UserPolicy
      * Thing user needs permission for
      * @var array
      */
-    protected $manage;
+    protected $policyKey;
+
     /**
      * Create a new policy instance.
      *
@@ -21,7 +23,8 @@ class UserPolicy
      */
     public function __construct()
     {
-        $this->manage = array_search(self::class, User::$policies);
+        $policies = UserPermissions::getPolicies();
+        $this->policyKey =  UserPermissions::getModelShortName( (array_search(UserPolicy::class, $policies)) );
     }
 
     /**
@@ -34,7 +37,7 @@ class UserPolicy
     {
         if ( $user->is_super_admin )
             return true;
-        elseif ( ! $this->manage )
+        elseif ( ! $this->policyKey )
             return false;
     }
 
@@ -45,7 +48,17 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return User::hasPermission($user, "create_$this->manage");
+        return UserPermissions::hasPermission($user, "create_$this->policyKey");
+    }
+
+    /**
+     * Determine if the user is allowed to read
+     * @param User $user
+     * @return bool
+     */
+    public function read(User $user)
+    {
+        return UserPermissions::hasPermission($user, "read_$this->policyKey");
     }
 
     /**
@@ -55,7 +68,7 @@ class UserPolicy
      */
     public function update(User $user)
     {
-        return User::hasPermission($user, "update_$this->manage");
+        return UserPermissions::hasPermission($user, "update_$this->policyKey");
     }
 
     /**
@@ -65,7 +78,7 @@ class UserPolicy
      */
     public function delete(User $user)
     {
-        return User::hasPermission($user, "delete_$this->manage");
+        return UserPermissions::hasPermission($user, "delete_$this->policyKey");
     }
 
 
