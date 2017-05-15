@@ -7,7 +7,7 @@
     {{--<meta name="csrf-token" content="{{ csrf_token() }}">--}}
     <title>@yield('title') | {{ config('app.name') }}</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ url('/') }}/{{ mix('css/app.css') }}">
     <style>
         @media (max-width: 575px) {
             .navbar .container {
@@ -24,9 +24,9 @@
 
     @yield('body')
 
-    <script src="{{ mix('js/manifest.js') }}"></script>
-    <script src="{{ mix('js/vendor.js') }}"></script>
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ url('/') }}/{{ mix('js/manifest.js') }}"></script>
+    <script src="{{ url('/') }}/{{ mix('js/vendor.js') }}"></script>
+    <script src="{{ url('/') }}/{{ mix('js/app.js') }}"></script>
     @yield('footer-scripts')
 </body>
 </html>
