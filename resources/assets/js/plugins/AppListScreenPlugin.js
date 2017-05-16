@@ -25,7 +25,7 @@ const AppListScreenPlugin = {
                     appPerPage: 25,
                     appResourcesIds: [],
                     appSelectedResources: [],
-                    appQuickEditText: '',
+                    appQuickEditOption: '',
                     appPagination: {},
                     appPaginationOptions: {
                         offset: 5,
@@ -141,6 +141,56 @@ const AppListScreenPlugin = {
                             vm.fetchResources();
                     }
                 },
+                appQuickEditResources() {
+                    let vm = this;
+                    let action = _.toLower(vm.appQuickEditOption);
+                    let selected = vm.appSelectedResources;
+                    let progress = vm.$Progress;
+
+                    if ( action.length && selected.length ) {
+
+                        if ( action === 'export' ) {
+                            let urlString = '';
+
+                            _.forEach(selected, function(id, index) {
+                                let operand = index ? '&' : '?';
+                                urlString += operand + 'resourceIds[]=' + id;
+                            });
+
+                            window.location = vm.appResourceUrl + '/export' + urlString;
+                        }
+                        else {
+                            progress.start();
+
+                            vm.$http.put(vm.appResourceUrl + '/' + action + '/quick-edit', {resources: selected}).then(function (response) {
+                                if (response.data && response.data.success) {
+                                    progress.finish();
+
+                                    _.delay(function() {
+                                        vm.appQuickEditOption = '';
+                                        vm.appCustomSuccessAlertConfirmed(response.data.success);
+
+                                        if ( typeof vm.fetchResources === 'function' )
+                                            vm.fetchResources();
+                                    }, 500);
+                                }
+                            }, function (error) {
+                                if ( error.status && error.status === 403 && error.data )
+                                    vm.appCustomErrorAlertConfirmed(error.data.error);
+                                else if ( error.status && error.status === 404 && error.data )
+                                    vm.appCustomErrorAlert(error.data.error);
+                                else
+                                    vm.appGeneralErrorAlert();
+
+                                progress.fail();
+                                vm.appQuickEditOption = '';
+                            });
+                        }
+                    }
+                },
+                appExportAll() {
+                    window.location = this.appResourceUrl + '/export';
+                },
                 appInitialiseSettings() {
                     let vm = this;
 
@@ -249,6 +299,9 @@ const AppListScreenPlugin = {
                 appCustomSuccessAlert(successMsg, time = 3000) {
                     swal({ title: "Excellent!", text: successMsg, type: 'success', animation: 'slide-from-bottom', timer: parseInt(time)});
                 },
+                appCustomSuccessAlertConfirmed(successMsg) {
+                    swal({ title: "Excellent!", text: successMsg, type: 'success', animation: 'slide-from-bottom'}, function(){});
+                },
                 appUserHasPermission(action) {
                     let vm = this;
 
@@ -290,9 +343,9 @@ const AppListScreenPlugin = {
             },
             watch: {
                 appSelectedResources() {
-                    this.appQuickEditText = '';
+                    this.appQuickEditOption = '';
                 },
-                appQuickEditText(action) {
+                appQuickEditOption(action) {
                     let vm = this;
                     let num = vm.appSelectedResources.length;
 
@@ -308,7 +361,7 @@ const AppListScreenPlugin = {
                             if ( confirmed && typeof vm.quickEditResources === 'function' )
                                 vm.quickEditResources();
                             else
-                                vm.appQuickEditText = '';
+                                vm.appQuickEditOption = '';
                         });
                     }
                 },

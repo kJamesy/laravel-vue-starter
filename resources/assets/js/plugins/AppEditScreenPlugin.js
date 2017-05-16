@@ -14,17 +14,6 @@ const AppEditcreenPlugin = {
                 }
             },
             methods: {
-                appGoTime() {
-                    let vm = this;
-                    let progress = vm.$Progress;
-
-                    progress.start();
-
-                    _.delay(function() {
-                        progress.finish();
-                        vm.fetchingData = false;
-                    }, 500);
-                },
                 appGetResource() {
                     let vm = this;
                     let progress = vm.$Progress;
@@ -132,9 +121,6 @@ const AppEditcreenPlugin = {
                     });
 
                 },
-            },
-            watch: {
-
             },
         });
 

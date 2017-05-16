@@ -79,9 +79,6 @@ const AppCreatecreenPlugin = {
                     }
                 },
             },
-            watch: {
-
-            },
         });
 
     }

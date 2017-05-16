@@ -13,7 +13,7 @@
                 <div class="mt-md-4 mb-md-4">
                     <form class="form-inline pull-left" v-if="appSelectedResources.length">
                         <label class="form-control-label mr-sm-2" for="quick-edit">Options</label>
-                        <select class="custom-select form-control mb-2 mb-sm-0 mr-sm-5" v-model="appQuickEditText" id="quick-edit">
+                        <select class="custom-select form-control mb-2 mb-sm-0 mr-sm-5" v-model="appQuickEditOption" id="quick-edit">
                             <option v-for="option in quickEditOptions" v-bind:value="option.value" v-if="appUserHasPermission(option.value)">
                                 {{ option.text }}
                             </option>
@@ -106,8 +106,7 @@
                     { text: 'Activate', value: 'activate' },
                     { text: 'Deactivate', value: 'deactivate' },
                     { text: 'Delete', value: 'delete' }
-                ],
-                quickEditOption: '',
+                ]
             }
         },
         computed: {
@@ -136,53 +135,10 @@
                 this.appFetchResources(this, orderAttr, orderToggle);
             },
             quickEditResources() {
-                let vm = this;
-                let action = _.toLower(vm.appQuickEditText);
-                let selected = vm.appSelectedResources;
-                let progress = vm.$Progress;
-
-                if ( action.length && selected.length ) {
-
-                    if ( action === 'export' ) {
-                        let urlString = '';
-
-                        _.forEach(selected, function(id, index) {
-                            let operand = index ? '&' : '?';
-                            urlString += operand + 'resourceIds[]=' + id;
-                        });
-
-                        window.location = vm.appResourceUrl + '/export' + urlString;
-                    }
-                    else {
-                        progress.start();
-
-                        vm.$http.put(vm.appResourceUrl + '/' + action + '/quick-edit', {resources: selected}).then(function (response) {
-                            if (response.data && response.data.success) {
-                                progress.finish();
-                                vm.appQuickEditText = '';
-
-                                _.delay(function() {
-                                    swal({title: "Excellent!", text: response.data.success, type: 'success', animation: 'slide-from-bottom'}, function () {
-                                        vm.fetchResources();
-                                    });
-                                }, 500);
-                            }
-                        }, function (error) {
-                            if ( error.status && error.status === 403 && error.data )
-                                vm.appCustomErrorAlertConfirmed(error.data.error);
-                            else if ( error.status && error.status === 404 && error.data )
-                                vm.appCustomErrorAlert(error.data.error);
-                            else
-                                vm.appGeneralErrorAlert();
-
-                            progress.fail();
-                            vm.quickEdit = '';
-                        });
-                    }
-                }
+                this.appQuickEditResources();
             },
             exportAll() {
-                window.location = this.appResourceUrl + '/export';
+                this.appExportAll();
             },
         },
     }

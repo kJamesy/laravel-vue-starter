@@ -16450,8 +16450,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             fetchingData: true,
-            quickEditOptions: [{ text: 'Select Option', value: '' }, { text: 'Export', value: 'export' }, { text: 'Activate', value: 'activate' }, { text: 'Deactivate', value: 'deactivate' }, { text: 'Delete', value: 'delete' }],
-            quickEditOption: ''
+            quickEditOptions: [{ text: 'Select Option', value: '' }, { text: 'Export', value: 'export' }, { text: 'Activate', value: 'activate' }, { text: 'Deactivate', value: 'deactivate' }, { text: 'Delete', value: 'delete' }]
         };
     },
 
@@ -16480,47 +16479,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.appFetchResources(this, orderAttr, orderToggle);
         },
         quickEditResources: function quickEditResources() {
-            var vm = this;
-            var action = _.toLower(vm.appQuickEditText);
-            var selected = vm.appSelectedResources;
-            var progress = vm.$Progress;
-
-            if (action.length && selected.length) {
-
-                if (action === 'export') {
-                    var urlString = '';
-
-                    _.forEach(selected, function (id, index) {
-                        var operand = index ? '&' : '?';
-                        urlString += operand + 'resourceIds[]=' + id;
-                    });
-
-                    window.location = vm.appResourceUrl + '/export' + urlString;
-                } else {
-                    progress.start();
-
-                    vm.$http.put(vm.appResourceUrl + '/' + action + '/quick-edit', { resources: selected }).then(function (response) {
-                        if (response.data && response.data.success) {
-                            progress.finish();
-                            vm.appQuickEditText = '';
-
-                            _.delay(function () {
-                                swal({ title: "Excellent!", text: response.data.success, type: 'success', animation: 'slide-from-bottom' }, function () {
-                                    vm.fetchResources();
-                                });
-                            }, 500);
-                        }
-                    }, function (error) {
-                        if (error.status && error.status === 403 && error.data) vm.appCustomErrorAlertConfirmed(error.data.error);else if (error.status && error.status === 404 && error.data) vm.appCustomErrorAlert(error.data.error);else vm.appGeneralErrorAlert();
-
-                        progress.fail();
-                        vm.quickEdit = '';
-                    });
-                }
-            }
+            this.appQuickEditResources();
         },
         exportAll: function exportAll() {
-            window.location = this.appResourceUrl + '/export';
+            this.appExportAll();
         }
     }
 });
@@ -17440,8 +17402,7 @@ var AppCreatecreenPlugin = {
                         });
                     }
                 }
-            },
-            watch: {}
+            }
         });
     }
 };
@@ -17471,17 +17432,6 @@ var AppEditcreenPlugin = {
             },
 
             methods: {
-                appGoTime: function appGoTime() {
-                    var vm = this;
-                    var progress = vm.$Progress;
-
-                    progress.start();
-
-                    _.delay(function () {
-                        progress.finish();
-                        vm.fetchingData = false;
-                    }, 500);
-                },
                 appGetResource: function appGetResource() {
                     var vm = this;
                     var progress = vm.$Progress;
@@ -17570,8 +17520,7 @@ var AppEditcreenPlugin = {
                         vm.fetchingData = false;
                     });
                 }
-            },
-            watch: {}
+            }
         });
     }
 };
@@ -17610,7 +17559,7 @@ var AppListScreenPlugin = {
                     appPerPage: 25,
                     appResourcesIds: [],
                     appSelectedResources: [],
-                    appQuickEditText: '',
+                    appQuickEditOption: '',
                     appPagination: {},
                     appPaginationOptions: {
                         offset: 5,
@@ -17715,6 +17664,49 @@ var AppListScreenPlugin = {
                         vm.appSearching = true;
                         if (typeof vm.fetchResources === 'function') vm.fetchResources();
                     }
+                },
+                appQuickEditResources: function appQuickEditResources() {
+                    var vm = this;
+                    var action = _.toLower(vm.appQuickEditOption);
+                    var selected = vm.appSelectedResources;
+                    var progress = vm.$Progress;
+
+                    if (action.length && selected.length) {
+
+                        if (action === 'export') {
+                            var urlString = '';
+
+                            _.forEach(selected, function (id, index) {
+                                var operand = index ? '&' : '?';
+                                urlString += operand + 'resourceIds[]=' + id;
+                            });
+
+                            window.location = vm.appResourceUrl + '/export' + urlString;
+                        } else {
+                            progress.start();
+
+                            vm.$http.put(vm.appResourceUrl + '/' + action + '/quick-edit', { resources: selected }).then(function (response) {
+                                if (response.data && response.data.success) {
+                                    progress.finish();
+
+                                    _.delay(function () {
+                                        vm.appQuickEditOption = '';
+                                        vm.appCustomSuccessAlertConfirmed(response.data.success);
+
+                                        if (typeof vm.fetchResources === 'function') vm.fetchResources();
+                                    }, 500);
+                                }
+                            }, function (error) {
+                                if (error.status && error.status === 403 && error.data) vm.appCustomErrorAlertConfirmed(error.data.error);else if (error.status && error.status === 404 && error.data) vm.appCustomErrorAlert(error.data.error);else vm.appGeneralErrorAlert();
+
+                                progress.fail();
+                                vm.appQuickEditOption = '';
+                            });
+                        }
+                    }
+                },
+                appExportAll: function appExportAll() {
+                    window.location = this.appResourceUrl + '/export';
                 },
                 appInitialiseSettings: function appInitialiseSettings() {
                     var vm = this;
@@ -17829,6 +17821,9 @@ var AppListScreenPlugin = {
 
                     swal({ title: "Excellent!", text: successMsg, type: 'success', animation: 'slide-from-bottom', timer: parseInt(time) });
                 },
+                appCustomSuccessAlertConfirmed: function appCustomSuccessAlertConfirmed(successMsg) {
+                    swal({ title: "Excellent!", text: successMsg, type: 'success', animation: 'slide-from-bottom' }, function () {});
+                },
                 appUserHasPermission: function appUserHasPermission(action) {
                     var vm = this;
 
@@ -17864,9 +17859,9 @@ var AppListScreenPlugin = {
             },
             watch: {
                 appSelectedResources: function appSelectedResources() {
-                    this.appQuickEditText = '';
+                    this.appQuickEditOption = '';
                 },
-                appQuickEditText: function appQuickEditText(action) {
+                appQuickEditOption: function appQuickEditOption(action) {
                     var vm = this;
                     var num = vm.appSelectedResources.length;
 
@@ -17879,7 +17874,7 @@ var AppListScreenPlugin = {
                             showCancelButton: true,
                             confirmButtonText: _.capitalize(action)
                         }, function (confirmed) {
-                            if (confirmed && typeof vm.quickEditResources === 'function') vm.quickEditResources();else vm.appQuickEditText = '';
+                            if (confirmed && typeof vm.quickEditResources === 'function') vm.quickEditResources();else vm.appQuickEditOption = '';
                         });
                     }
                 },
@@ -53751,8 +53746,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: (_vm.appQuickEditText),
-      expression: "appQuickEditText"
+      value: (_vm.appQuickEditOption),
+      expression: "appQuickEditOption"
     }],
     staticClass: "custom-select form-control mb-2 mb-sm-0 mr-sm-5",
     attrs: {
@@ -53766,7 +53761,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var val = "_value" in o ? o._value : o.value;
           return val
         });
-        _vm.appQuickEditText = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+        _vm.appQuickEditOption = $event.target.multiple ? $$selectedVal : $$selectedVal[0]
       }
     }
   }, _vm._l((_vm.quickEditOptions), function(option) {
