@@ -6,12 +6,12 @@
             <div v-if="appUserHasPermissionOnUser('update', resource)">
                 <form v-on:submit.prevent='updateResource' v-if="! fetchingData ">
 
-                    <h3 class="mb-5">
-                        <i class="fa fa-user"></i> {{ resource.first_name }} {{ resource.last_name }} Roles/Permissions
+                    <h3 class="mb-3">
+                        <i class="fa fa-id-badge"></i> {{ resource.first_name }} {{ resource.last_name }}
                         <small v-show="resource.is_super_admin" class="text-warning" title="Super Admin" data-toggle="tooltip"> <i class="fa fa-certificate"></i> </small>
                     </h3>
                     <div class="text-muted mb-5">
-                        <i class="fa fa-warning"></i> Please note, you can only assign permissions you have
+                        <i class="fa fa-warning"></i> Please note, you can only assign permissions that you have
                     </div>
 
                     <div class="form-group row checkbox mb-4" v-if="appUser.is_super_admin">
@@ -41,9 +41,6 @@
                     <div class="form-group row mt-2">
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary btn-outline-primary">Update</button>
-                            <div class="pull-right">
-                                <router-link class="btn btn-outline-warning" v-bind:to="{ name: 'admin_users.edit', params: { id: id }}">Profile</router-link>
-                            </div>
                         </div>
                     </div>
                 </form>

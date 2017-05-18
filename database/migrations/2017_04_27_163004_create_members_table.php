@@ -17,14 +17,12 @@ class CreateMembersTable extends Migration
             $table->increments('id');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('username')->unique();
+            $table->string('phone')->nullable();
             $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('password');
             $table->boolean('active')->default(1);
-            $table->string('status')->nullable();
-            $table->string('phone')->nullable();
             $table->rememberToken();
-            $table->mediumText('meta')->nullable();
             $table->timestamps();
         });
     }

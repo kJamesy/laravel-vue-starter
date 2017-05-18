@@ -31,6 +31,9 @@ class ResourceExporter
             case 'users':
                 return static::generateUsersExport();
                 break;
+            case 'members':
+                return static::generateMembersExport();
+                break;
         }
     }
 
@@ -45,13 +48,15 @@ class ResourceExporter
             $exportArr = [];
 
             if ( count($resources) ) {
-                foreach ($resources as $user) {
+                foreach ($resources as $resource) {
                     $exportArr[] = [
-                        'First Name' => $user->first_name,
-                        'Last Name' => $user->last_name,
-                        'Email' => $user->email,
-                        'Active' => $user->active ? '✔' : '✗',
-                        'Super Admin' => $user->is_super_admin ? '✔' : '✗',
+                        'First Name' => $resource->first_name,
+                        'Last Name' => $resource->last_name,
+                        'Email' => $resource->email,
+                        'Username' => $resource->username,
+                        'Active' => $resource->active ? '✔' : '✗',
+                        'Role' => $resource->is_super_admin ? 'Super Admin' : 'User',
+                        'User Since' => $resource->created_at->toDateTimeString(),
                     ];
 
                 }
@@ -63,4 +68,38 @@ class ResourceExporter
 
         })->download('xls');
     }
+
+    /**
+     * Generate members export
+     * @return mixed
+     */
+    public function generateMembersExport()
+    {
+        return Excel::create($this->exportFileName, function($excel) {
+            $resources = $this->resources;
+            $exportArr = [];
+
+            if ( count($resources) ) {
+                foreach ($resources as $resource) {
+                    $exportArr[] = [
+                        'First Name' => $resource->first_name,
+                        'Last Name' => $resource->last_name,
+                        'Phone' => $resource->phone ?: 'None Provided',
+                        'Email' => $resource->email,
+                        'Username' => $resource->username,
+                        'Active' => $resource->active ? '✔' : '✗',
+                        'Member Since' => $resource->created_at->toDateTimeString(),
+                    ];
+
+                }
+            }
+
+            $excel->sheet('Members', function($sheet) use ($exportArr) {
+                $sheet->fromArray($exportArr);
+            });
+
+        })->download('xls');
+    }
+
+
 }

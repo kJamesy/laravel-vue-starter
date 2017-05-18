@@ -3,13 +3,12 @@
         <i class="fa fa-spinner fa-spin" v-if="fetchingData"></i>
 
         <template v-if="! fetchingData">
-            <div v-if="appUserHasPermissionOnUser('update', resource)">
-                <form v-on:submit.prevent='updateResource'>
+            <div v-if="appUserHasPermission('update')">
+                <h3 class="mb-5">
+                    <i class="fa fa-edit"></i> {{ resource.first_name }} {{ resource.last_name }}
+                </h3>
 
-                    <h3 class="mb-5">
-                        <i class="fa fa-edit"></i> {{ resource.first_name }} {{ resource.last_name }}
-                    </h3>
-
+                <form v-on:submit.prevent='updateResource' v-if="! fetchingData ">
                     <div class="form-group row" v-bind:class="validationErrors.first_name ? 'has-danger' : ''">
                         <label class="col-md-4 form-control-label" for="first_name">First Name</label>
                         <div class="col-md-8">
@@ -25,6 +24,15 @@
                             <input type="text" class="form-control" id="last_name" v-model.trim="resource.last_name" v-bind:class="validationErrors.last_name ? 'form-control-danger' : ''">
                             <small class="form-control-feedback">
                                 {{ validationErrors.last_name }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-bind:class="validationErrors.phone ? 'has-danger' : ''">
+                        <label class="col-md-4 form-control-label" for="phone">Phone</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="phone" placeholder="07..." v-model.trim="resource.phone" v-bind:class="validationErrors.phone ? 'form-control-danger' : ''">
+                            <small class="form-control-feedback">
+                                {{ validationErrors.phone }}
                             </small>
                         </div>
                     </div>
@@ -79,7 +87,7 @@
                             <form action="" class="form-inline pull-right">
                                 <label class="form-control-label mr-sm-2" for="more-options">More Options</label>
                                 <select class="custom-select form-control mb-2 mb-sm-0" v-model="moreOption" id="more-options">
-                                    <option v-for="option in moreOptions" v-bind:value="option.value" v-if="appUserHasPermissionOnUser(option.value, resource)">
+                                    <option v-for="option in moreOptions" v-bind:value="option.value" v-if="appUserHasPermission(option.value)">
                                         {{ option.text }}
                                     </option>
                                 </select>
@@ -105,13 +113,12 @@
         data() {
             return {
                 fetchingData: true,
-                resource: {id: '', first_name: '', last_name: '', username: '', email: '', password: '', password_confirmation: '', active: null, is_super_admin: null},
-                validationErrors: {first_name: '', last_name: '', username: '', email: '', password: '', password_confirmation: ''},
-                listRoute: 'admin_users.index',
+                resource: {id: '', first_name: '', last_name: '', phone: '', email: '', username: '', password: '', password_confirmation: '', active: null},
+                validationErrors: {first_name: '', last_name: '', phone: '', email: '', username: '', password: '', password_confirmation: ''},
+                listRoute: 'admin_members.index',
                 moreOptions: [
                     { text: 'Select Option', value: '' },
-                    { text: 'Roles / Permissions', value: 'permissions' },
-                    { text: 'Delete User', value: 'delete' },
+                    { text: 'Delete Member', value: 'delete' },
                 ],
                 moreOption: ''
             }
@@ -132,7 +139,7 @@
                 let vm = this;
 
                 if ( action.length ) {
-                    if ( action === 'delete' && vm.appUserHasPermissionOnUser(action, vm.resource) ) {
+                    if ( action === 'delete' && vm.appUserHasPermission(action) ) {
                         swal({title: 'Hey, are you sure about this?', type: "warning", showCancelButton: true, confirmButtonText: _.capitalize(action)}, function (confirmed) {
                             if (confirmed)
                                 vm.deleteResource();
@@ -140,8 +147,6 @@
                                 vm.moreOption = '';
                         });
                     }
-                    if ( action === 'permissions' && vm.appUserHasPermissionOnUser(action, vm.resource) )
-                        vm.$router.push({ name: 'admin_users.edit_permissions' });
                 }
             },
         }

@@ -106,6 +106,32 @@ class UserController extends Controller
             return response()->json(['error' => 'You are not authorised to perform this action.'], 403);
     }
 
+
+    /**
+     * Show requested resource
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id, Request $request)
+    {
+        $resource = User::findResource( (int) $id);
+        $currentUser = $request->user();
+
+        if ( $resource ) {
+            if ( $resource->id === $currentUser->id )
+                return response()->json(['error' => 'Cheeky, can\'t do that here. Please go to your profile.'], 403);
+
+            if ( ! $currentUser->can('read', $this->policyOwnerClass) )
+                return response()->json(['error' => 'You are not authorised to perform this action.'], 403);
+
+            return response()->json(compact('resource'));
+        }
+
+        return response()->json(['error' => 'User does not exist'], 404);
+    }
+
+
     /**
      * Show resource for editing
      * @param $id
@@ -293,32 +319,32 @@ class UserController extends Controller
     public function quickUpdate(Request $request, $update)
     {
         $currentUser = $request->user();
-        $resources = $request->resources;
+        $resourceIds = $request->resources;
 
         if ( $currentUser->can('update', $this->policyOwnerClass) ) {
-            $selectedNum = count($resources);
+            $selectedNum = count($resourceIds);
 
             if ( $selectedNum ) {
                 try {
-                    $users = User::getResourcesByIds($resources);
+                    $resources = User::getResourcesByIds($resourceIds);
                     $successNum = 0;
 
-                    if ( $users ) {
-                        foreach ( $users as $user ) {
-                            if ( $user->is_super_admin && ! $currentUser->is_super_admin )
+                    if ( $resources ) {
+                        foreach ( $resources as $resource ) {
+                            if ( $resource->is_super_admin && ! $currentUser->is_super_admin )
                                 continue;
                             else if ( $update == 'delete' && $currentUser->can('delete', $this->policyOwnerClass) ) {
-                                $user->delete();
+                                $resource->delete();
                                 $successNum++;
                             }
                             else if ( $update == 'activate' ) {
-                                $user->active = 1;
-                                $user->save();
+                                $resource->active = 1;
+                                $resource->save();
                                 $successNum++;
                             }
                             else if ( $update == 'deactivate' ) {
-                                $user->active = 0;
-                                $user->save();
+                                $resource->active = 0;
+                                $resource->save();
                                 $successNum++;
                             }
                         }
@@ -351,7 +377,7 @@ class UserController extends Controller
     public function export(Request $request)
     {
         if ( $request->user()->can('read', $this->policyOwnerClass) ) {
-            $resourceIds = (array)$request->resourceIds;
+            $resourceIds = (array) $request->resourceIds;
             $fileName = '';
 
             $resources = count($resourceIds) ? User::getResourcesByIds($resourceIds) : User::getResourcesNoPagination();

@@ -103,7 +103,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Find user by id
+     * Find resource by id
      * @param $id
      * @return mixed
      */

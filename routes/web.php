@@ -43,10 +43,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
                 Route::get('settings/{vue?}', 'AdminController@index');
                 Route::get('users/export', 'UserController@export');
                 Route::get('users/{vue?}', 'UserController@index');
+                Route::get('members/export', 'MemberController@export');
+                Route::get('members/{vue?}', 'MemberController@index');
             }
             Route::resource('settings', 'AdminController');
             Route::put('users/{option}/quick-edit', 'UserController@quickUpdate');
             Route::resource('users', 'UserController');
+            Route::put('members/{option}/quick-edit', 'MemberController@quickUpdate');
+            Route::resource('members', 'MemberController');
         });
 
         Route::get('inactive', ['as' => 'admin.inactive', 'middleware' => 'inactive', function () { return view('admin.inactive'); }]);

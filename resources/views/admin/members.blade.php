@@ -1,6 +1,6 @@
 @extends('admin._layouts.admin-template')
 
-@section('title', 'Users')
+@section('title', 'Members')
 
 @section('view-header-styles-scripts')
     <script>
@@ -8,16 +8,16 @@
         window.settingsKey = '{!! $settingsKey !!}';
         window.links = {
             home: '{{ route('settings.index') }}',
-            base: '{{ explode( $_SERVER['SERVER_NAME'], route('users.index'))[1] }}',
+            base: '{{ explode( $_SERVER['SERVER_NAME'], route('members.index'))[1] }}',
         }
     </script>
 @endsection
 
-@section('users_active', 'active')
+@section('members_active', 'active')
 @section('content')
-    <div id="admin-users-app">
-        <admin-users>
+    <div id="admin-members-app">
+        <admin-members>
 
-        </admin-users>
+        </admin-members>
     </div>
 @endsection

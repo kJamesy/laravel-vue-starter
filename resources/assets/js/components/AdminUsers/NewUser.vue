@@ -23,21 +23,21 @@
                             </small>
                         </div>
                     </div>
-                    <div class="form-group row" v-bind:class="validationErrors.username ? 'has-danger' : ''">
-                        <label class="col-md-4 form-control-label" for="username">Username</label>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" id="username" v-model.trim="resource.username" v-bind:class="validationErrors.username ? 'form-control-danger' : ''">
-                            <small class="form-control-feedback">
-                                {{ validationErrors.username }}
-                            </small>
-                        </div>
-                    </div>
                     <div class="form-group row" v-bind:class="validationErrors.email ? 'has-danger' : ''">
                         <label class="col-md-4 form-control-label" for="email">Email</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" id="email" v-model.trim="resource.email" v-bind:class="validationErrors.email ? 'form-control-danger' : ''">
                             <small class="form-control-feedback">
                                 {{ validationErrors.email }}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-bind:class="validationErrors.username ? 'has-danger' : ''">
+                        <label class="col-md-4 form-control-label" for="username">Username</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="username" v-model.trim="resource.username" v-bind:class="validationErrors.username ? 'form-control-danger' : ''">
+                            <small class="form-control-feedback">
+                                {{ validationErrors.username }}
                             </small>
                         </div>
                     </div>

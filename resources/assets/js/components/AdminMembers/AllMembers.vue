@@ -37,7 +37,7 @@
                             <tr class="pointer-cursor">
                                 <th class="normal-cursor" v-if="appUserHasPermission('update')">
                                     <label class="custom-control custom-checkbox mr-0">
-                                        <input type="checkbox" class="custom-control-input" v-model="selectAll">
+                                        <input type="checkbox" class="custom-control-input" v-model="appSelectAll">
                                         <span class="custom-control-indicator"></span>
                                     </label>
                                 </th>
@@ -46,31 +46,24 @@
                                 <th v-on:click.prevent="appChangeSort('username')">Username <span v-html="appGetSortMarkup('username')"></span></th>
                                 <th v-on:click.prevent="appChangeSort('active')" >Active <span v-html="appGetSortMarkup('active')"></span></th>
                                 <th v-on:click.prevent="appChangeSort('updated_at')" >Updated <span v-html="appGetSortMarkup('updated_at')"></span></th>
-                                <th></th>
+                                <th v-if="appUserHasPermission('update')"></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr v-for="user in orderedAppResources">
+                            <tr v-for="resource in orderedAppResources">
                                 <td v-if="appUserHasPermission('update')">
-                                    <template v-if="appUserHasPermissionOnUser('update', user)">
-                                        <label class="custom-control custom-checkbox mr-0">
-                                            <input type="checkbox" class="custom-control-input" v-model="appSelectedResources" v-bind:value="user.id">
-                                            <span class="custom-control-indicator"></span>
-                                        </label>
-                                    </template>
+                                    <label class="custom-control custom-checkbox mr-0">
+                                        <input type="checkbox" class="custom-control-input" v-model="appSelectedResources" v-bind:value="resource.id">
+                                        <span class="custom-control-indicator"></span>
+                                    </label>
                                 </td>
-                                <td>{{ user.name }} <small v-if="user.is_super_admin" class="text-warning" title="Super Admin" data-toggle="tooltip"> <i class="fa fa-certificate"></i> </small></td>
-                                <td>{{ user.email }}</td>
-                                <td> {{ user.username }}</td>
-                                <td v-html="appActiveMarkup(user.active)"></td>
-                                <td>{{ user.updated_at | dateToTheDay }}</td>
-                                <td>
-                                    <template v-if="appUserHasPermissionOnUser('read', user)">
-                                        <router-link v-bind:to="{ name: 'admin_users.view', params: { id: user.id }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-user-o"></i></router-link>
-                                    </template>
-                                    <template v-if="appUserIsCurrentUser(user)">
-                                        <a v-bind:href="appUserHome" class="btn btn-sm btn-outline-warning" data-toggle="tooltip" title="Yours truly :)"><i class="fa fa-user-o"></i></a>
-                                    </template>
+                                <td>{{ resource.name }}</td>
+                                <td>{{ resource.email }}</td>
+                                <td> {{ resource.username }}</td>
+                                <td v-html="appActiveMarkup(resource.active)"></td>
+                                <td>{{ resource.updated_at | dateToTheDay }}</td>
+                                <td v-if="appUserHasPermission('read')">
+                                    <router-link v-bind:to="{ name: 'admin_members.view', params: { id: resource.id }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-user-o"></i></router-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -106,28 +99,8 @@
                     { text: 'Activate', value: 'activate' },
                     { text: 'Deactivate', value: 'deactivate' },
                     { text: 'Delete', value: 'delete' }
-                ]
-            }
-        },
-        computed: {
-            selectAll: {
-                get() {
-                    return this.appResourcesIds ? this.appSelectedResources.length === this.appResourcesIds.length : false;
-                },
-                set(value) {
-                    let vm = this;
-                    let resourcesIds = _.cloneDeep(vm.appResourcesIds);
-                    let selected = [];
-
-                    if ( value ) {
-                        _.forEach(resourcesIds, function(id) {
-                            if ( id !== vm.appUser.id )
-                                selected.push(id);
-                        });
-                    }
-
-                    this.appSelectedResources = selected;
-                }
+                ],
+                quickEditOption: '',
             }
         },
         methods: {

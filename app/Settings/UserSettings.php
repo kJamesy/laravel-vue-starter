@@ -25,6 +25,7 @@ class UserSettings
      */
     public static $cacheKeys = [
         'users',
+        'members'
     ];
 
     /**

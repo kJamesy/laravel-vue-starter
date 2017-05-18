@@ -5,7 +5,8 @@
 * VueJS router history mode 
 * Authentication from two tables: users (admins) and members
 * Customised auth emails for the two types of app users
-* Admin user management functionality with policy-based permissions
+* User management functionality with policy-based permissions
+* Member management functionality
 * Elastic search + Laravel scout for search
 * Bootstrap 4
 
