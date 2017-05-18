@@ -3,7 +3,7 @@
         <i class="fa fa-spinner fa-spin" v-if="fetchingData"></i>
 
         <template v-if="! fetchingData">
-            <div v-if="appUserHasPermission('update')">
+            <div v-if="appUserHasPermission('read')">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <tbody>

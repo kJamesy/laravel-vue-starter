@@ -53338,7 +53338,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "mt-5"
   }, [(_vm.fetchingData) ? _c('i', {
     staticClass: "fa fa-spinner fa-spin"
-  }) : _vm._e(), _vm._v(" "), (!_vm.fetchingData) ? [(_vm.appUserHasPermission('update')) ? _c('div', [_c('div', {
+  }) : _vm._e(), _vm._v(" "), (!_vm.fetchingData) ? [(_vm.appUserHasPermission('read')) ? _c('div', [_c('div', {
     staticClass: "table-responsive"
   }, [_c('table', {
     staticClass: "table table-striped"
