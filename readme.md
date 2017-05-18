@@ -13,16 +13,16 @@
 ### Screenshots
 
 #### Users Landing Page
-![Users Landing Page](public/screenshots/4.Users_Landing_Page.jpg)
+![Users Landing Page](public/screenshots/Users_Landing_Page.jpg)
 
 #### Users Permissions Page
-![Users Landing Page](public/screenshots/5.Users_Permissions.jpg)
+![Users Landing Page](public/screenshots/Users_Permissions.jpg)
 
 #### User Profile Page
-![Users Landing Page](public/screenshots/3.User_Profile.jpg)
+![Users Landing Page](public/screenshots/User_Profile.jpg)
 
 #### VueJS History Mode
-![Users Landing Page](public/screenshots/6.Vue_History_Mode.jpg)
+![Users Landing Page](public/screenshots/Vue_History_Mode.jpg)
 
 * More screenshots in /public/screenshots
 
